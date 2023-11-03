@@ -1,13 +1,14 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import Controller from '@/utils/interfaces/controller.interface';
-import HttpException from '@/utils/exceptions/http.exception';
-import validate from '@/resources/user/user.validation';
-import validationMiddleware from '@/middleware/validation.middleware';
-import authenticated from '@/middleware/authenticated.middleware';
-import authenticatedMiddleware from '@/middleware/authenticated.middleware';
+import Controller from '../../utils/interfaces/controller.interface';
+import HttpException from '../../utils/exceptions/http.exception';
+import validate from '../../resources/user/user.validation';
+import validationMiddleware from '../../middleware/validation.middleware';
+import authenticated from '../../middleware/authenticated.middleware';
+import authenticatedMiddleware from '../../middleware/authenticated.middleware';
 import CommonService from '../common/common.service';
 import AdminService from './admin.service';
-import authorizeMiddleware from '@/middleware/authorize.middleware';
+import authorizeMiddleware from '../../middleware/authorize.middleware';
+import { UserRole } from 'resources/enums/enums';
 
 class AdminController implements Controller {
     public path = '/admin';
@@ -61,9 +62,17 @@ class AdminController implements Controller {
         res: Response,
         next: NextFunction,
     ): Promise<Response | void> => {
-        try {
-            const role: string = (req.query.role as string) || 'USER';
+        const roleString = (req.query.role as string) || 'User';
 
+        let role: UserRole;
+
+        if (roleString === 'User') {
+            role = UserRole.User;
+        } else {
+            role = UserRole.Admin;
+        }
+
+        try {
             const users = await this.adminService.getAllUser(role);
 
             res.status(200).json(users);
@@ -79,10 +88,18 @@ class AdminController implements Controller {
     ): Promise<Response | void> => {
         try {
             const id = parseInt(req.params.id, 10);
-            const role: string = (req.query.role as string) || 'USER';
 
             if (isNaN(id)) {
                 return next(new HttpException(400, 'Invalid param id'));
+            }
+            const roleString = (req.query.role as string) || 'User';
+
+            let role: UserRole;
+
+            if (roleString === 'User') {
+                role = UserRole.User;
+            } else {
+                role = UserRole.Admin;
             }
 
             const user = await this.adminService.getUser(id, role);
@@ -136,7 +153,9 @@ class AdminController implements Controller {
 
             const isDeleted = await this.adminService.deleteUser(id);
 
-            res.status(200).json({message : `Sucessfully deleted the user : ${id}`});
+            res.status(200).json({
+                message: `Sucessfully deleted the user : ${id}`,
+            });
         } catch (error: any) {
             next(new HttpException(401, error.message));
         }

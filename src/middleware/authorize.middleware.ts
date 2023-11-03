@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import HttpException from '@/utils/exceptions/http.exception';
+import HttpException from '../utils/exceptions/http.exception';
 
 async function authorizeMiddleware(
     req: Request,
@@ -10,7 +10,7 @@ async function authorizeMiddleware(
         return next(new HttpException(404, 'No logged in user'));
     }
     const userId = req.user.id;
-    const isAdmin = req.user.role === 'ADMIN'; // Assuming you have a 'role' property for users
+    const isAdmin = req.user.role === 'Admin'; // Assuming you have a 'role' property for users
     const isUser = !isAdmin; // Assuming non-admin users have a different role
     const id = parseInt(req.params.id, 10);
 

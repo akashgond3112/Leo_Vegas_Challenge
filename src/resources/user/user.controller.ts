@@ -1,11 +1,11 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import Controller from '@/utils/interfaces/controller.interface';
-import HttpException from '@/utils/exceptions/http.exception';
-import validate from '@/resources/user/user.validation';
-import UserService from '@/resources/user/user.service';
-import validationMiddleware from '@/middleware/validation.middleware';
-import authenticatedMiddleware from '@/middleware/authenticated.middleware';
-import authorizeMiddleware from '@/middleware/authorize.middleware';
+import Controller from '../../utils/interfaces/controller.interface';
+import HttpException from '../../utils/exceptions/http.exception';
+import validate from '../../resources/user/user.validation';
+import UserService from '../../resources/user/user.service';
+import validationMiddleware from '../../middleware/validation.middleware';
+import authenticatedMiddleware from '../../middleware/authenticated.middleware';
+import authorizeMiddleware from '../../middleware/authorize.middleware';
 import CommonService from '../common/common.service';
 
 class UserController implements Controller {

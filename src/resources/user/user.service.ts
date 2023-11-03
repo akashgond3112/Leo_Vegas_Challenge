@@ -1,6 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import token from '@/utils/token';
-import { GeneratePassword, ValidatePassword } from '@/utils/passwordValidation';
+import token from '../../utils/token';
+import {
+    GeneratePassword,
+    ValidatePassword,
+} from '../../utils/passwordValidation';
+import { UserRole } from 'resources/enums/enums';
 
 const prisma = new PrismaClient();
 
@@ -9,7 +13,7 @@ class UserService {
         name: string,
         email: string,
         password: string,
-        role: string,
+        role: UserRole,
     ): Promise<string> {
         const hashedPassword = await GeneratePassword(password);
         const user = await prisma.user.create({
@@ -35,7 +39,6 @@ class UserService {
     }
 
     public async login(email: string, password: string): Promise<string> {
-
         const user = await prisma.user.findUnique({
             where: {
                 email,
@@ -47,7 +50,6 @@ class UserService {
         }
 
         const isValidPassword = await ValidatePassword(email, password);
-
 
         if (!isValidPassword) {
             throw new Error('Wrong credentials given');

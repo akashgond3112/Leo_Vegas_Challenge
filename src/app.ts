@@ -1,10 +1,11 @@
 import express, { Application } from 'express';
+import { Server } from 'http';
 import compression from 'compression';
 import cors from 'cors';
 import morgan from 'morgan';
-import Controller from '@/utils/interfaces/controller.interface';
-import prisma from '@/utils/database';
-import ErrorMiddleware from '@/middleware/error.middleware';
+import prisma from './utils/database';
+import Controller from './utils/interfaces/controller.interface';
+import ErrorMiddleware from './middleware/error.middleware';
 import helmet from 'helmet';
 
 class App {
@@ -45,8 +46,8 @@ class App {
         await prisma.$disconnect();
     }
 
-    public listen(): void {
-        this.express.listen(this.port, () => {
+    public listen(): Server {
+        return this.express.listen(this.port, () => {
             console.log(`App listening on the port ${this.port}`);
         });
     }
