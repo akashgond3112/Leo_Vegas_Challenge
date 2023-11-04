@@ -96,7 +96,7 @@ class UserController implements Controller {
             return next(new HttpException(404, 'No logged in user'));
         }
 
-        res.status(200).send({ data: req.user });
+        res.status(200).send(req.user);
     };
 
     private updateUser = async (
@@ -112,8 +112,6 @@ class UserController implements Controller {
             const userId = req.user.id;
 
             const { name, email } = req.body;
-
-            console.log(userId, name, email);
 
             const updatedUser = await this.commonService.updateUser(
                 userId,

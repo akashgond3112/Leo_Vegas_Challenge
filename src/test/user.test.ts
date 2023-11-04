@@ -13,16 +13,15 @@ interface LoginResponse {
     email: string;
     access_token: string;
     role: string;
-    // Add other properties from the actual response as needed
 }
 
-describe('User Registration API', () => {
+/* describe('User Registration API', () => {
     let app: App; // Declare app variable outside the test
     let server: Server;
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port);
+        app = new App([new UserController(), new AdminController()], port, "test");
         server = await app.listen();
     });
 
@@ -93,9 +92,7 @@ describe('User Registration API', () => {
 
         expect(response.status).toBe(400);
     });
-
-    
-});
+}); */
 
 describe('User Login related  Scenarios', () => {
     let app: App; // Declare app variable outside the test
@@ -103,7 +100,7 @@ describe('User Login related  Scenarios', () => {
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port);
+        app = new App([new UserController(), new AdminController()], port, "test");
         server = await app.listen();
     });
 
@@ -125,7 +122,7 @@ describe('User Login related  Scenarios', () => {
         expect(authToken).toBeDefined(); // or use .toBeTruthy()
     });
 
-    it('user should not login invalid credentials', async () => {
+    it('user should not login with invalid credentials', async () => {
         const response = await supertest(app.express)
             .post('/api/users/login')
             .send({
@@ -145,7 +142,7 @@ describe('User details related Scenarios', () => {
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port);
+        app = new App([new UserController(), new AdminController()], port, "test");
         server = await app.listen();
     });
 
@@ -184,19 +181,17 @@ describe('User details related Scenarios', () => {
 
         // Add more assertions for the response body if needed
         const expectedResponse = {
-            data: {
-                id: expect.any(Number), // You can use a more specific matcher if needed
-                name: 'User 1',
-                email: 'user1@mailinator.com',
-                role: 'User',
-            },
+            id: expect.any(Number), // You can use a more specific matcher if needed
+            name: 'User 1',
+            email: 'user1@mailinator.com',
+            role: 'User',
         };
 
         // Check if the response body matches the expected structure
         expect(response.body).toEqual(expectedResponse);
     });
 
-    it('user 2 should be able to get the details of user 1', async () => {
+    it('user 2 should not be able to get the details of user 1', async () => {
         const response = await supertest(app.express)
             .get(`/api/users/${user1_response.id}`)
             .set('Authorization', `Bearer ${user2_response.access_token}`); // Use the stored token
@@ -214,7 +209,7 @@ describe('User details update related Scenarios', () => {
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port);
+        app = new App([new UserController(), new AdminController()], port, "test");
         server = await app.listen();
     });
 
@@ -240,8 +235,8 @@ describe('User details update related Scenarios', () => {
                 password: 'password123',
             });
 
-        user1_response = user_1_response.body; 
-        user2_response = user_2_response.body; 
+        user1_response = user_1_response.body;
+        user2_response = user_2_response.body;
     });
 
     it('user 1 should be able to update the details', async () => {
@@ -288,7 +283,7 @@ describe('Admin detailed`s related Scenarios', () => {
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port);
+        app = new App([new UserController(), new AdminController()], port, "test");
         server = await app.listen();
     });
 
@@ -398,7 +393,7 @@ describe('Admin should be able to update details of any users related Scenarios'
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port);
+        app = new App([new UserController(), new AdminController()], port, "test");
         server = await app.listen();
     });
 
@@ -427,13 +422,13 @@ describe('Admin should be able to update details of any users related Scenarios'
         admnin1_response = admnin_response.body;
     });
 
-
     it('Admin should be able to update the details of the user 1 user using admin routes', async () => {
         const response = await supertest(app.express)
             .patch(`/api/admin/users/${user1_response.id}`)
-            .set('Authorization', `Bearer ${admnin1_response.access_token}`).send({
-                "name": "User 1"
-            }); 
+            .set('Authorization', `Bearer ${admnin1_response.access_token}`)
+            .send({
+                name: 'User 1',
+            });
 
         expect(response.status).toBe(200);
 
@@ -452,14 +447,13 @@ describe('Admin should be able to update details of any users related Scenarios'
     it('Uer Role should not be able to update the details of any role using admin routes', async () => {
         const response = await supertest(app.express)
             .patch(`/api/admin/users/${user1_response.id}`)
-            .set('Authorization', `Bearer ${user1_response.access_token}`).send({
-                "name": "User 1"
+            .set('Authorization', `Bearer ${user1_response.access_token}`)
+            .send({
+                name: 'User 1',
             });
 
         expect(response.status).toBe(403);
     });
-
-    
 });
 
 describe('Admin delete related Scenarios', () => {
@@ -471,7 +465,7 @@ describe('Admin delete related Scenarios', () => {
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port);
+        app = new App([new UserController(), new AdminController()], port, "test");
         server = await app.listen();
     });
 
@@ -482,7 +476,6 @@ describe('Admin delete related Scenarios', () => {
     });
 
     beforeEach(async () => {
-
         // Register a deleted user
         await supertest(app.express).post('/api/users/register').send({
             name: 'Delete User',

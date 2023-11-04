@@ -11,10 +11,12 @@ import helmet from 'helmet';
 class App {
     public express: Application;
     public port: number;
+    public environment: string;
 
-    constructor(controllers: Controller[], port: number) {
+    constructor(controllers: Controller[], port: number, environment: string) {
         this.express = express();
         this.port = port;
+        this.environment = environment;
 
         prisma.$connect();
 
@@ -26,7 +28,12 @@ class App {
     private initialiseMiddleware(): void {
         this.express.use(helmet());
         this.express.use(cors());
-        this.express.use(morgan('dev'));
+        if (
+            this.environment === 'development' ||
+            this.environment === 'production'
+        ) {
+            this.express.use(morgan('dev'));
+        }
         this.express.use(express.json());
         this.express.use(express.urlencoded({ extended: false }));
         this.express.use(compression());

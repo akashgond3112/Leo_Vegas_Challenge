@@ -5,6 +5,7 @@ import {
     ValidatePassword,
 } from '../../utils/passwordValidation';
 import { UserRole } from 'resources/enums/role.enums';
+import UpdateUserResponse from 'utils/interfaces/updateUserResponse.interface';
 
 const prisma = new PrismaClient();
 
@@ -14,7 +15,7 @@ class UserService {
         email: string,
         password: string,
         role: UserRole,
-    ): Promise<string> {
+    ): Promise<UpdateUserResponse | null> {
         const hashedPassword = await GeneratePassword(password);
         const user = await prisma.user.create({
             data: {
@@ -27,18 +28,13 @@ class UserService {
 
         const accessToken = token.createToken(user);
 
-        // Update the user's access_token field in the database
-        await prisma.user.update({
-            where: { id: user.id },
-            data: {
-                access_token: accessToken,
-            },
-        });
-
-        return accessToken;
+        return await this.updateUserAccessToken(user.id, accessToken);
     }
 
-    public async login(email: string, password: string): Promise<any> {
+    public async login(
+        email: string,
+        password: string,
+    ): Promise<UpdateUserResponse | null> {
         const user = await prisma.user.findUnique({
             where: {
                 email,
@@ -58,23 +54,36 @@ class UserService {
         // If there's no valid access token or it's not valid, generate a new one
         const accessToken = token.createToken(user);
 
-        // Update the user's access_token field in the database with the new token
-        const updatedUser = await prisma.user.update({
-            where: { id: user.id },
-            data: {
-                access_token: accessToken,
-            },
-        });
+        return await this.updateUserAccessToken(user.id, accessToken);
+    }
 
-        const responseObject = {
-            id: updatedUser.id,
-            email: updatedUser.email,
-            name: updatedUser.name,
-            role: updatedUser.role,
-            access_token: updatedUser.access_token,
-        };
+    private async updateUserAccessToken(
+        userId: number,
+        accessToken: string,
+    ): Promise<UpdateUserResponse | null> {
+        try {
+            // Update the user's access_token field in the database with the new token
+            const updatedUser = await prisma.user.update({
+                where: { id: userId },
+                data: {
+                    access_token: accessToken,
+                },
+            });
 
-        return responseObject;
+            // Create the response object with the updated user's data
+            const responseObject: UpdateUserResponse = {
+                id: updatedUser.id,
+                email: updatedUser.email,
+                name: updatedUser.name,
+                role: updatedUser.role,
+                access_token: updatedUser.access_token,
+            };
+
+            return responseObject;
+        } catch (error) {
+            console.error('Error updating user:', error);
+            throw new Error('Failed to update user');
+        }
     }
 }
 

@@ -3,7 +3,7 @@ import { cleanEnv, str, port } from 'envalid';
 function validateEnv(): void {
     cleanEnv(process.env, {
         NODE_ENV: str({
-            choices: ['development', 'production'],
+            choices: ['development', 'production', 'test'],
         }),
         JWT_SECRET: str(),
         DATABASE_URL: str(),
