@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-
+import { UserRole } from 'resources/enums/role.enums';
 const prisma = new PrismaClient();
 
 class AdminService {
-    public async getAllUser(role: string): Promise<any> {
+    public async getAllUser(role: UserRole): Promise<any> {
         // Use Prisma to update the user's details based on the provided data
         try {
             const users = await prisma.user.findMany({
@@ -12,7 +12,6 @@ class AdminService {
                     id: true,
                     name: true,
                     email: true,
-                    access_token: true,
                     role: true,
                 },
             });
@@ -24,7 +23,7 @@ class AdminService {
         }
     }
 
-    public async getUser(userId: number, role: string): Promise<any> {
+    public async getUser(userId: number, role: UserRole): Promise<any> {
         try {
             const user = await prisma.user.findUnique({
                 where: { id: userId, role: role },
@@ -32,7 +31,6 @@ class AdminService {
                     id: true,
                     name: true,
                     email: true,
-                    access_token: true,
                     role: true,
                 },
             });

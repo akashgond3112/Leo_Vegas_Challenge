@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import token from '@/utils/token';
-import prisma from '@/utils/database';
-import Token from '@/utils/interfaces/token.interface';
-import HttpException from '@/utils/exceptions/http.exception';
+import token from '../utils/token';
+import prisma from '../utils/database';
+import Token from '../utils/interfaces/token.interface';
+import HttpException from '../utils/exceptions/http.exception';
 import jwt from 'jsonwebtoken';
 
 async function authenticatedMiddleware(
@@ -25,8 +25,6 @@ async function authenticatedMiddleware(
             return next(new HttpException(401, 'Unauthorised'));
         }
 
-        console.log(payload);
-
         // Use Prisma to query the user based on the token payload
         const user = await prisma.user.findUnique({
             where: {
@@ -46,7 +44,6 @@ async function authenticatedMiddleware(
         }
 
         req.user = user;
-
         return next();
     } catch (error) {
         return next(new HttpException(401, 'Unauthorised'));

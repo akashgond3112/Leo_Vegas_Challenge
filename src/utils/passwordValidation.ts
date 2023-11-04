@@ -13,12 +13,7 @@ export const GeneratePassword = async (password: string) => {
     return await bcrypt.hash(password, await GenerateSalt());
 };
 
-export const ValidatePassword = async (email: string, password: string): Promise<boolean> => {
-    const user = await prisma.user.findUnique({ where: { email } });
+export const ValidatePassword = async (userPassword: string, currentPassword: string): Promise<boolean> => {
 
-    if (!user) {
-        return false; // User not found
-    }
-
-    return bcrypt.compare(password, user.password);
+    return bcrypt.compare(currentPassword, userPassword);
 };

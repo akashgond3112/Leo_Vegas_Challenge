@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import UpdateUserResponse from 'utils/interfaces/updateUserResponse.interface';
 
 const prisma = new PrismaClient();
 
@@ -7,7 +8,7 @@ class CommonService {
         userId: number,
         name: string,
         email: string,
-    ): Promise<any> => {
+    ): Promise<UpdateUserResponse | null> => {
         // Create an object to hold the fields to be updated
         const updateData: Record<string, any> = {};
 
@@ -28,14 +29,13 @@ class CommonService {
 
         // Use Prisma to update the user's details based on the provided data
         try {
-            const updatedUser = await prisma.user.update({
+            const updatedUser: UpdateUserResponse = await prisma.user.update({
                 where: { id: userId },
                 data: updateData,
                 select: {
                     id: true,
                     name: true,
                     email: true,
-                    access_token: true,
                     role: true,
                 },
             });
