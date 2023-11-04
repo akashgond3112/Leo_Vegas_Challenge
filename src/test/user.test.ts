@@ -15,7 +15,7 @@ interface LoginResponse {
     role: string;
 }
 
-/* describe('User Registration API', () => {
+describe('User Registration API', () => {
     let app: App; // Declare app variable outside the test
     let server: Server;
 
@@ -92,7 +92,7 @@ interface LoginResponse {
 
         expect(response.status).toBe(400);
     });
-}); */
+});
 
 describe('User Login related  Scenarios', () => {
     let app: App; // Declare app variable outside the test

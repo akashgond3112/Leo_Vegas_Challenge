@@ -1,7 +1,21 @@
 version: '3.8'
 services:
+  node-app:
+    image: leo_vegas
+    container_name: node-app-container
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+      - prisma-migrate
+    command: ["dockerize", "-wait", "tcp://mysql:3306", "-timeout", "60s", "npm", "test"]
+    networks:
+      - mynetwork
+
   mysql:
-    image: mysql:5.7 # You can use any desired MySQL version
+    image: mysql:5.7
     container_name: mysql-container
     environment:
       MYSQL_ROOT_PASSWORD: root_password
@@ -9,16 +23,20 @@ services:
       MYSQL_PASSWORD: test_password
       MYSQL_DATABASE: test_database
     ports:
-      - "3306:3306" # Map the host machine's port to the MySQL container's port
-    volumes:
-      - ./docker/mysql-data:/var/lib/mysql
+      - "3306:3306"
+    networks:
+      - mynetwork
+
+  prisma-migrate:
+    image: leo_vegas
+    depends_on:
+      - mysql
+    command: ["dockerize", "-wait", "tcp://mysql:3306", "-timeout", "60s", "npx", "prisma", "migrate", "dev", "--name", "init"]
+    environment:
+      - NODE_ENV=production
     networks:
       - mynetwork
 
 networks:
   mynetwork:
     driver: bridge
-
-
-volumes:
-  mysql-data:

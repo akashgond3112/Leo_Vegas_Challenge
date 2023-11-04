@@ -57,6 +57,7 @@ class UserController implements Controller {
         next: NextFunction,
     ): Promise<Response | void> => {
         try {
+            
             const { name, email, password, role } = req.body;
 
             const token = await this.userService.register(
