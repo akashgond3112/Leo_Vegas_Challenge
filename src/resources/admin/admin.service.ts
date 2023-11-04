@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { UserRole } from 'resources/enums/enums';
+import { UserRole } from 'resources/enums/role.enums';
 const prisma = new PrismaClient();
 
 class AdminService {
@@ -12,7 +12,6 @@ class AdminService {
                     id: true,
                     name: true,
                     email: true,
-                    access_token: true,
                     role: true,
                 },
             });
@@ -32,7 +31,6 @@ class AdminService {
                     id: true,
                     name: true,
                     email: true,
-                    access_token: true,
                     role: true,
                 },
             });

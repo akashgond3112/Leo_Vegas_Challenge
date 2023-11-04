@@ -7,8 +7,9 @@ import authenticated from '../../middleware/authenticated.middleware';
 import authenticatedMiddleware from '../../middleware/authenticated.middleware';
 import CommonService from '../common/common.service';
 import AdminService from './admin.service';
-import authorizeMiddleware from '../../middleware/authorize.middleware';
-import { UserRole } from 'resources/enums/enums';
+import { adminAuthorizeMiddleware } from '../../middleware/authorize.middleware';
+import { UserRole } from '../enums/role.enums';
+
 
 class AdminController implements Controller {
     public path = '/admin';
@@ -27,7 +28,7 @@ class AdminController implements Controller {
         this.router.get(
             `${this.path}/users`,
             authenticated,
-            authorizeMiddleware,
+            adminAuthorizeMiddleware,
             this.getUsers,
         );
 
@@ -35,7 +36,7 @@ class AdminController implements Controller {
         this.router.get(
             `${this.path}/users/:id`,
             authenticated,
-            authorizeMiddleware,
+            adminAuthorizeMiddleware,
             this.getUser,
         );
 
@@ -43,7 +44,7 @@ class AdminController implements Controller {
         this.router.patch(
             `${this.path}/users/:id`,
             authenticatedMiddleware,
-            authorizeMiddleware,
+            adminAuthorizeMiddleware,
             validationMiddleware(validate.updateUser),
             this.updateUser,
         );
@@ -52,7 +53,7 @@ class AdminController implements Controller {
         this.router.delete(
             `${this.path}/users/:id`,
             authenticatedMiddleware,
-            authorizeMiddleware,
+            adminAuthorizeMiddleware,
             this.deleteUser,
         );
     }

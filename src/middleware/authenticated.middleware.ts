@@ -25,8 +25,6 @@ async function authenticatedMiddleware(
             return next(new HttpException(401, 'Unauthorised'));
         }
 
-        console.log(payload);
-
         // Use Prisma to query the user based on the token payload
         const user = await prisma.user.findUnique({
             where: {
@@ -46,7 +44,6 @@ async function authenticatedMiddleware(
         }
 
         req.user = user;
-
         return next();
     } catch (error) {
         return next(new HttpException(401, 'Unauthorised'));

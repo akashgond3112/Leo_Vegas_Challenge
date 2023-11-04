@@ -11,7 +11,7 @@ services:
     ports:
       - "3306:3306" # Map the host machine's port to the MySQL container's port
     volumes:
-      - ./mysql-data:/var/lib/mysql
+      - ./docker/mysql-data:/var/lib/mysql
     networks:
       - mynetwork
 

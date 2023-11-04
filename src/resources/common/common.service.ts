@@ -35,7 +35,6 @@ class CommonService {
                     id: true,
                     name: true,
                     email: true,
-                    access_token: true,
                     role: true,
                 },
             });

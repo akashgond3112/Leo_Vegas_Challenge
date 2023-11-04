@@ -4,7 +4,7 @@ import {
     GeneratePassword,
     ValidatePassword,
 } from '../../utils/passwordValidation';
-import { UserRole } from 'resources/enums/enums';
+import { UserRole } from 'resources/enums/role.enums';
 
 const prisma = new PrismaClient();
 
@@ -38,7 +38,7 @@ class UserService {
         return accessToken;
     }
 
-    public async login(email: string, password: string): Promise<string> {
+    public async login(email: string, password: string): Promise<any> {
         const user = await prisma.user.findUnique({
             where: {
                 email,
@@ -49,34 +49,32 @@ class UserService {
             throw new Error('Unable to find a user with that email address');
         }
 
-        const isValidPassword = await ValidatePassword(email, password);
+        const isValidPassword = await ValidatePassword(user.password, password);
 
         if (!isValidPassword) {
             throw new Error('Wrong credentials given');
-        }
-
-        // Check if the user already has a valid access token
-        if (user.access_token) {
-            // Verify if the existing access token is still valid
-            const isTokenValid = await token.verifyToken(user.access_token);
-            if (isTokenValid) {
-                // Reuse the existing access token
-                return user.access_token;
-            }
         }
 
         // If there's no valid access token or it's not valid, generate a new one
         const accessToken = token.createToken(user);
 
         // Update the user's access_token field in the database with the new token
-        await prisma.user.update({
+        const updatedUser = await prisma.user.update({
             where: { id: user.id },
             data: {
                 access_token: accessToken,
             },
         });
 
-        return accessToken;
+        const responseObject = {
+            id: updatedUser.id,
+            email: updatedUser.email,
+            name: updatedUser.name,
+            role: updatedUser.role,
+            access_token: updatedUser.access_token,
+        };
+
+        return responseObject;
     }
 }
 

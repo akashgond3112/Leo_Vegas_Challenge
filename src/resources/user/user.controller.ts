@@ -5,7 +5,10 @@ import validate from '../../resources/user/user.validation';
 import UserService from '../../resources/user/user.service';
 import validationMiddleware from '../../middleware/validation.middleware';
 import authenticatedMiddleware from '../../middleware/authenticated.middleware';
-import authorizeMiddleware from '../../middleware/authorize.middleware';
+import {
+    authorizeMiddleware,
+    userAuthorizeMiddleware,
+} from '../../middleware/authorize.middleware';
 import CommonService from '../common/common.service';
 
 class UserController implements Controller {
@@ -31,11 +34,18 @@ class UserController implements Controller {
             validationMiddleware(validate.login),
             this.login,
         );
-        this.router.get(`${this.path}`, authenticatedMiddleware, this.getUser);
+        this.router.get(
+            `${this.path}/:id`,
+            authenticatedMiddleware,
+            userAuthorizeMiddleware, // only user role is allowed
+            authorizeMiddleware, // other user cannot see the details of other users
+            this.getUser,
+        );
         this.router.patch(
             `${this.path}/:id`,
             authenticatedMiddleware,
-            authorizeMiddleware,
+            userAuthorizeMiddleware, // only user role is allowed
+            authorizeMiddleware, // other user cannot see the details of other users
             validationMiddleware(validate.updateUser),
             this.updateUser,
         );
@@ -69,9 +79,9 @@ class UserController implements Controller {
     ): Promise<Response | void> => {
         try {
             const { email, password } = req.body;
-            const token = await this.userService.login(email, password);
+            const user = await this.userService.login(email, password);
 
-            res.status(200).json({ token });
+            res.status(200).json(user);
         } catch (error: any) {
             next(new HttpException(400, error.message));
         }
