@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-app-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: node-app
+  template:
+    metadata:
+      labels:
+        app: node-app
+    spec:
+      containers:
+        - name: node-app
+          image: akashgond3112/leovegaschallenge:latest
+          env:
+            - name: NODE_ENV
+              value: production
+          ports:
+            - containerPort: 8000
+          command: ["dockerize", "-wait", "tcp://mysql:3306", "-timeout", "60s", "npm", "test"]
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-app-service
+spec:
+  selector:
+    app: node-app
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:5.7
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root_password
+            - name: MYSQL_USER
+              value: test_user
+            - name: MYSQL_PASSWORD
+              value: test_password
+            - name: MYSQL_DATABASE
+              value: test_database
+          ports:
+            - containerPort: 3306
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prisma-migrate-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prisma-migrate
+  template:
+    metadata:
+      labels:
+        app: prisma-migrate
+    spec:
+      containers:
+        - name: prisma-migrate
+          image: akashgond3112/leovegaschallenge:latest
+          env:
+            - name: NODE_ENV
+              value: production
+          command: ["dockerize", "-wait", "tcp://mysql:3306", "-timeout", "60s", "npx", "prisma", "migrate", "dev", "--name", "init"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  selector:
+    app: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prisma-migrate-service
+spec:
+  selector:
+    app: prisma-migrate
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

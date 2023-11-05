@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   node-app:
-    image: leo_vegas
+    image: akashgond3112/leovegaschallenge:latest
     container_name: node-app-container
     environment:
       - NODE_ENV=production
@@ -28,7 +28,7 @@ services:
       - mynetwork
 
   prisma-migrate:
-    image: leo_vegas
+    image: akashgond3112/leovegaschallenge:latest
     depends_on:
       - mysql
     command: ["dockerize", "-wait", "tcp://mysql:3306", "-timeout", "60s", "npx", "prisma", "migrate", "dev", "--name", "init"]

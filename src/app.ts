@@ -12,11 +12,13 @@ class App {
     public express: Application;
     public port: number;
     public environment: string;
+    public client: string;
 
-    constructor(controllers: Controller[], port: number, environment: string) {
+    constructor(controllers: Controller[], port: number, environment: string, client: string) {
         this.express = express();
         this.port = port;
         this.environment = environment;
+        this.client = client;
 
         prisma.$connect();
 
@@ -27,16 +29,31 @@ class App {
 
     private initialiseMiddleware(): void {
         this.express.use(helmet());
-        this.express.use(cors());
-        if (
-            this.environment === 'development' ||
-            this.environment === 'production'
-        ) {
+
+        // Handle Cors, Client url and methods allowed
+        this.express.use(cors({
+            origin: this.client,
+            methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+        }));
+
+        // Handle morgan logs based on the env
+        if (this.environment === 'development') {
             this.express.use(morgan('dev'));
+        } else if (this.environment === 'production') {
+            this.express.use(morgan('combined'));
         }
         this.express.use(express.json());
         this.express.use(express.urlencoded({ extended: false }));
-        this.express.use(compression());
+        this.express.use(compression({
+            level: 6,
+            threshold: 100 * 1000, // Less than 100KB should not be compressed
+            filter: (req, res) => {
+                if (req.headers['x-no-compression']) {
+                    return false
+                }
+                return compression.filter(req, res)
+            }
+        }));
     }
 
     private initialiseControllers(controllers: Controller[]): void {

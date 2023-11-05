@@ -21,7 +21,7 @@ describe('User Registration API', () => {
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port, "test");
+        app = new App([new UserController(), new AdminController()], port, "test", "");
         server = await app.listen();
     });
 
@@ -100,7 +100,7 @@ describe('User Login related  Scenarios', () => {
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port, "test");
+        app = new App([new UserController(), new AdminController()], port, "test", "");
         server = await app.listen();
     });
 
@@ -142,7 +142,7 @@ describe('User details related Scenarios', () => {
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port, "test");
+        app = new App([new UserController(), new AdminController()], port, "test", "");
         server = await app.listen();
     });
 
@@ -209,7 +209,7 @@ describe('User details update related Scenarios', () => {
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port, "test");
+        app = new App([new UserController(), new AdminController()], port, "test", "");
         server = await app.listen();
     });
 
@@ -283,7 +283,7 @@ describe('Admin detailed`s related Scenarios', () => {
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port, "test");
+        app = new App([new UserController(), new AdminController()], port, "test", "");
         server = await app.listen();
     });
 
@@ -393,7 +393,7 @@ describe('Admin should be able to update details of any users related Scenarios'
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port, "test");
+        app = new App([new UserController(), new AdminController()], port, "test", "");
         server = await app.listen();
     });
 
@@ -465,7 +465,7 @@ describe('Admin delete related Scenarios', () => {
 
     beforeAll(async () => {
         // Initialize the app before running the tests
-        app = new App([new UserController(), new AdminController()], port, "test");
+        app = new App([new UserController(), new AdminController()], port, "test", "");
         server = await app.listen();
     });
 

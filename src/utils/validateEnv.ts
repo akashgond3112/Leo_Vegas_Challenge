@@ -8,6 +8,7 @@ function validateEnv(): void {
         JWT_SECRET: str(),
         DATABASE_URL: str(),
         PORT: port({ default: 3000 }),
+        CLIENT_URL: str(),
     });
 }
 
