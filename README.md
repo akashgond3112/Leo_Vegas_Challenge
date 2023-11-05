@@ -1,37 +1,25 @@
 ```markdown
 # Leo Vegas Challenge
 
-This repository contains [Your App Name], a brief description of your app.
-
-## Table of Contents
-
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-- [Usage](#usage)
-- [Docker Compose](#docker-compose)
-- [Contributing](#contributing)
-- [License](#license)
-
 ## Prerequisites
 
-List the prerequisites or dependencies that need to be installed and configured for your application to work. Include software, libraries, or services.
+The prerequisites or dependencies that needed to be installed and configured for the application to work. Include software, libraries, or services.
 
 - Node.js (version v20.3.0)
 - NPM (version 9.6.7)
 - Docker
-- ...
+- Mysql
 
 ## Getting Started
 
-Provide instructions on how to get your application up and running.
+Instructions on how to get the application up and running.
 
 ### Installation
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/akashgond3112/Leo_Vegas_Challenge.git
+   checkout main branch
    cd your-app
    ```
 
@@ -99,5 +87,3 @@ Provide instructions on how to get your application up and running.
       docker-compose run node-app npm test # Currently having some issue; try to run the command 2 times, need more debugging.
       ```
 ```
-
-This improved version maintains the readability of the content and fixes some minor formatting issues, ensuring that your instructions are clear and easy to follow.
