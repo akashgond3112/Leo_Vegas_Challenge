@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base image
-FROM node:latest
+FROM node:16.18.0
 
 # Install dockerize
 RUN wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
@@ -9,8 +9,8 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize
 # Set the working directory in the container
 WORKDIR /app
 
-# Update npm to version 10.2.3
-RUN npm install -g npm@10.2.3
+# Update npm to version 8.19.2
+RUN npm install -g npm@8.19.2
 
 # Copy the the application code including package.json and package-lock.json to the container
 COPY . .
@@ -22,4 +22,4 @@ RUN npm install
 EXPOSE 8000
 
 # Command to run your Node.js application
-CMD ["npm", "test"]
+CMD ["npm", "start"]

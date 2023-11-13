@@ -10,7 +10,7 @@ services:
     depends_on:
       - mysql
       - prisma-migrate
-    command: ["dockerize", "-wait", "tcp://mysql:3306", "-timeout", "60s", "npm", "test"]
+    command: ["dockerize", "-wait", "tcp://mysql:3306", "-timeout", "60s", "npm", "start"]
     networks:
       - mynetwork
 

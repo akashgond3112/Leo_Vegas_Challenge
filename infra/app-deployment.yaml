@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-app
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: node-app
+  template:
+    metadata:
+      labels:
+        app: node-app
+    spec:
+      containers:
+        - name: node-app
+          image: akashgond3112/leovegaschallenge:latest
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: host
+            - name: DB_PORT
+              value: "3306"  # Assuming a default MySQL port
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: dbName
+          ports:
+            - containerPort: 8000
+          resources:
+            limits:
+              cpu: "500m"  # 0.5 CPU cores
+              memory: "512Mi"  # 512 Megabytes
+            requests:
+              cpu: "250m"  # 0.25 CPU cores
+              memory: "256Mi"  # 256 Megabytes
+          command: ["npm", "start"]
+---
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-app-service
+spec:
+  selector:
+    app: node-app
+  ports:
+    - protocol: "TCP"
+      port: 8000
+      targetPort: 8000
+      nodePort: 30000
+  type: NodePort
