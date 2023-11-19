@@ -1,3 +1,37 @@
+# Define a 'Storage' for Mysql Storage.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: mysql-storage
+provisioner: k8s.io/minikube-hostpath
+volumeBindingMode: Immediate
+reclaimPolicy: Delete
+---
+# Define a 'Persistent Voulume '(PV) for Mysql Storage.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv
+  labels:
+    app: mysql
+    tier: database
+spec:
+  storageClassName: mysql-storage
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteMany
+  local:
+    path: /storage/data
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - minikube
+---
 # Define a 'Persistent Voulume Claim'(PVC) for Mysql Storage, dynamically provisioned by cluster
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -11,7 +45,8 @@ spec:
     - ReadWriteOnce   #This specifies the mode of the claim that we are trying to create.
   resources:
     requests:
-      storage: 1Gi    #This will tell kubernetes about the amount of space we are trying to claim.
+      storage: 100Mi    #This will tell kubernetes about the amount of space we are trying to claim.
+  storageClassName: mysql-storage
 ---
 # Configure 'Deployment' of mysql server
 apiVersion: apps/v1
