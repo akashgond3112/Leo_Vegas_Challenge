@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: nginx
+  annotations:
+    kubernetes.io/change-cause: "Updating to alipine version"
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: "500m"  # 0.5 CPU cores
+              memory: "512Mi"  # 512 Megabytes
+            requests:
+              cpu: "250m"  # 0.25 CPU cores
+              memory: "256Mi"  # 256 Megabytes

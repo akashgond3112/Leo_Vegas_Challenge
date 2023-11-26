@@ -2,15 +2,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: node-app
+  labels:
+      app: node-app
+      tier: backend
 spec:
   replicas: 4
   selector:
     matchLabels:
       app: node-app
+      tier: backend
   template:
     metadata:
       labels:
         app: node-app
+        tier: backend
     spec:
       containers:
         - name: node-app
@@ -56,12 +61,17 @@ apiVersion: v1
 kind: Service
 metadata:
   name: node-app-service
+  labels:
+      app: node-app
+      tier: backend
 spec:
+  type: NodePort
+  ports:
+  - protocol: "TCP"
+    port: 8000
+    targetPort: 8000
+    nodePort: 30000
   selector:
     app: node-app
-  ports:
-    - protocol: "TCP"
-      port: 8000
-      targetPort: 8000
-      nodePort: 30000
-  type: NodePort
+    tier: backend
+ 

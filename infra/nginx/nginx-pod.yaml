@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod1
+  labels:
+    team: integrations
+    app: todo
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+      resources:
+            limits:
+              cpu: "500m"  # 0.5 CPU cores
+              memory: "512Mi"  # 512 Megabytes
+            requests:
+              cpu: "250m"  # 0.25 CPU cores
+              memory: "256Mi"  # 256 Megabytes

@@ -113,10 +113,12 @@ metadata:
     app: mysql
     tier: database
 spec:
+  type: NodePort
   ports:
     - port: 3306
       targetPort: 3306
+      nodePort: 30001
+      protocol: TCP
   selector:       # mysql Pod Should contain same labels
     app: mysql
     tier: database
-  clusterIP: None  # We Use DNS, Thus ClusterIP is not relevant

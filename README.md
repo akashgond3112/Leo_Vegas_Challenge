@@ -87,3 +87,53 @@ Instructions on how to get the application up and running.
       docker-compose run node-app npm test # Currently having some issue; try to run the command 2 times, need more debugging.
       ```
 ```
+Create a cluster.
+- minikube start --nodes 2 -p local-cluster --driver=docker
+Check status of cluster.
+- minikube status -p local-cluster
+Check the context.
+- kubectl config get-contexts
+Set the context.
+- kubectl config set-context local-cluster
+Add a new node.
+- minikube node add --worker -p local-cluster(cluster name)
+How to get the node IP address
+- minikube ip -p local-cluster(cluster name)
+Delete a node.
+- minikube node delete <node-name> local-cluster(cluster name)
+How to aacess the minikube dashboard.
+- minikube dashboard --url -p local-cluster
+How to get pods labels details
+- kubectl get pod --show-labels
+How to filter the pods based on the labels
+- kubectl get pod -l team=integrations
+How to get the pod information
+- kubectl get pod <pod-name> -o wide
+How to get the pod information in yaml format
+- kubectl get pod <pod-name> -o yaml
+How to get the full description of the pod
+- kubectl describe pod <pod-name>
+How to get into the pod
+- kubectl exec -it <pod-name> -- bash/sh
+How to get into a specific container inside the pod
+- kubectl exec -it <pod-name> -c <container-name> -- bash/sh
+How we can port forward
+- kubectl port-forward <pod-name> <local-port>:<container-port> 
+How to check the pod logs
+- kubectl logs <pod-name>
+How to get the replica sets
+- kubectl get rs
+How to delete all the resources e.g pods/services/replicasets.
+- kubectl delete all --all
+How to scale the replica set without editing the deployment file (not adviceable)
+- kubectl scale --replicas=4 <deployment-name>
+How to update the image version
+- kubectl set image <deployment-name> <container-name>=version-number --record
+How to check the history of the rollout
+- kubectl rollout history <deployment-name>
+How to rollout to the previous version
+- kubectl rollout undo <deployment-name>
+How to rollout to the specific version
+- kubectl rollout undo <deployment-name> --to-revision=1
+How to get the endpoints
+- kubectl get endpoints
